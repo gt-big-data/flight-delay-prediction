@@ -1,6 +1,7 @@
 import React from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import "../App.css";
 import { Box, TextField } from "@mui/material";
 import { fontSize, fontStyle } from "@mui/system";
 
@@ -8,22 +9,23 @@ export default function predictor_tool() {
   return (
     <Box sx={{ justifyContent: "center", paddingY: 10 }}>
       <Box>
-        <Stack
-          sx={{
-            display: "flex",
-            margin: "auto",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 0,
-            width: 800,
-            height: 48,
-            fontFamily: "Inter",
-            fontStyle: "normal",
-            fontWeight: 400,
-            fontSize: 20,
-            textAlign: "center",
-            letterSpacing: 0.1,
-          }}
+        <Stack className="toolTitleBox"
+        //   sx={{
+        //     display: "flex",
+        //     margin: "auto",
+        //     justifyContent: "center",
+        //     alignItems: "center",
+        //     padding: 0,
+        //     width: 800,
+        //     height: 48,
+        //     fontFamily: "Inter",
+        //     fontStyle: "normal",
+        //     fontWeight: 400,
+        //     fontSize: 20,
+        //     textAlign: "center",
+        //     letterSpacing: 0.1,
+        //   }}
+
         >
           <b>Predictor Tool</b> <br />
           Enter in the Flight Number and the Departure Destination of your
@@ -43,15 +45,9 @@ export default function predictor_tool() {
             width: 493,
             paddingY: 8
         }}>
-          <TextField
-            id="Flight Number"
-            label="Flight Number*"
-            variant="outlined"
+          <TextField id="Flight Number" label="Flight Number*" variant="outlined"
           />
-          <TextField
-            id="Departing"
-            label="Departing From*"
-            variant="outlined"
+          <TextField id="Departing" abel="Departing From*" variant="outlined"
           />
         </Stack>
         <Stack sx={{
@@ -59,10 +55,7 @@ export default function predictor_tool() {
             gap:2,
             width: 493
         }}>
-          <TextField
-            id="Flight Number"
-            label="Flight Number*"
-            variant="outlined"
+          <TextField id="Flight Number" label="Flight Number*" variant="outlined"
           />
           <TextField
             id="Departing"

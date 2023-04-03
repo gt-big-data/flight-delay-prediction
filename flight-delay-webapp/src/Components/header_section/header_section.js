@@ -1,119 +1,122 @@
-import React from 'react';
-import Box from '@mui/material/Box';
+import React from "react";
+import Box from "@mui/material/Box";
 import background from "./flightdelaybackground.png";
-import Button from '@mui/material/Button';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Button from "@mui/material/Button";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
     primary: {
-        main: '#578590'
+      main: "#578590",
     },
     secondary: {
-        main: '#2C3444'
+      main: "#2C3444",
     },
     contrastThreshold: 3,
   },
 });
 
 export default function header_section() {
-    return(
-        <div>
-            <Box
-            sx={{
-                backgroundColor: '#1F5D6A',
-                backgroundSize: 'cover',
-                position: 'absolute',
-                backgroundRepeat: 'no-repeat',
-                width: '100vw',
-                height: 700,
-                opacity: 0.65,
-                borderBottomLeftRadius: '10%',
-                borderBottomRightRadius: '10%',
-            }}
-            />
-            
-            <Box 
-            component="text"
-            className="font-link-bold"
-            sx={{ 
-                position: 'absolute',
-                paddingTop: 30,
-                paddingLeft: 45,
-                textAlign: 'center',
-                color: 'white',
-                fontSize: 52,
-                fontWeight: 700,
-            }}
-            >Flight Delay Predictor</Box>
+  return (
+    <div>
+      <Box
+        sx={{
+          backgroundColor: "#1F5D6A",
+          backgroundSize: "cover",
+          position: "absolute",
+          backgroundRepeat: "no-repeat",
+          width: "100vw",
+          height: 700,
+          opacity: 0.65,
+          borderBottomLeftRadius: "10%",
+          borderBottomRightRadius: "10%",
+        }}
+      />
 
-            <Box 
-            component="text"
-            className="font-link-reg"
-            sx={{ 
-                width: 650,
-                position: 'absolute',
-                paddingTop: 40,
-                paddingLeft: 38,
-                color: 'white',
-                fontSize: 18,
-                textAlign: 'center',
-            }}
-            >Planning a flight in the next few weeks? Check if your flight is going to be delayed using our tool, which utilizes machine learning models to predict the chances of delay.</Box>
+      <Box
+        component="text"
+        className="font-link-bold"
+        sx={{
+          position: "absolute",
+          paddingTop: 30,
+          paddingLeft: 45,
+          textAlign: "center",
+          color: "white",
+          fontSize: 52,
+          fontWeight: 700,
+        }}
+      >
+        Flight Delay Predictor
+      </Box>
 
-            <ThemeProvider theme={theme}>
-                <Button 
-                variant="contained"
-                color='primary'
-                disableElevation
-                className="font-link-reg"
-                sx={{ 
-                    fontFamily: 'Inter',
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    position: 'absolute',
-                    marginLeft: 59,
-                    marginTop: 55,
-                    color: 'white',
-                }}
-                >Prediction Tool</Button>
+      <Box
+        component="text"
+        className="font-link-reg"
+        sx={{
+          width: 650,
+          position: "absolute",
+          paddingTop: 40,
+          paddingLeft: 38,
+          color: "white",
+          fontSize: 18,
+          textAlign: "center",
+        }}
+      >
+        Planning a flight in the next few weeks? Check if your flight is going
+        to be delayed using our tool, which utilizes machine learning models to
+        predict the chances of delay.
+      </Box>
 
-                <Button 
-                variant="contained"
-                color='secondary'
-                disableElevation
-                className="font-link-reg"
-                sx={{ 
-                    position: 'absolute',
-                    marginLeft: 80,
-                    marginTop: 55,
-                    color: 'white',
-                    fontFamily: 'Inter',
-                    fontWeight: 700,
-                    textTransform: 'none',
-                }}
-                >Data Visual Tool</Button>
-            </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <Button
+          variant="contained"
+          color="primary"
+          disableElevation
+          className="font-link-reg"
+          sx={{
+            fontFamily: "Inter",
+            fontWeight: 700,
+            textTransform: "none",
+            position: "absolute",
+            marginLeft: 59,
+            marginTop: 55,
+            color: "white",
+          }}
+        >
+          Prediction Tool
+        </Button>
 
+        <Button
+          variant="contained"
+          color="secondary"
+          disableElevation
+          className="font-link-reg"
+          sx={{
+            position: "absolute",
+            marginLeft: 80,
+            marginTop: 55,
+            color: "white",
+            fontFamily: "Inter",
+            fontWeight: 700,
+            textTransform: "none",
+          }}
+        >
+          Data Visual Tool
+        </Button>
+      </ThemeProvider>
 
-            <Box
-            sx={{
-                backgroundImage: `url(${background})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                //position: 'absolute',
-                width: '100vw',
-                height: 700,
-                borderBottomLeftRadius: '10%',
-                borderBottomRightRadius: '10%',
-            }}
-            />
-                
-                
-
-            
-
-        </div>
-        
-    );
+      <Box
+        sx={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          //position: 'absolute',
+          width: "100vw",
+          height: 700,
+          borderBottomLeftRadius: "10%",
+          borderBottomRightRadius: "10%",
+        }}
+      />
+    </div>
+  );
 }
