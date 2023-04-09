@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import background from "./flightdelaybackground.png";
 import Button from "@mui/material/Button";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import "../../App.css";
 
 export const theme = createTheme({
     palette: {
@@ -16,10 +17,17 @@ export const theme = createTheme({
     },
 });
 
+const scroll = (e) => {
+    const target = e.target.getAttribute('goto');
+    const goto = document.getElementById(target);
+    goto.scrollIntoView({behavior: 'smooth'});
+}
+
 export default function header_section() {
     return (
         <div>
             <Box
+                id = 'background'
                 sx={{
                     backgroundColor: '#1F5D6A',
                     backgroundSize: 'cover',
@@ -74,7 +82,8 @@ export default function header_section() {
 
             <ThemeProvider theme={theme}>
                 <Button
-                    //onclick= "scroll()"
+                    goto = 'predictorTool'
+                    onClick={scroll}
                     variant="contained"
                     color='primary'
                     disableElevation
@@ -89,7 +98,6 @@ export default function header_section() {
                         fontWeight: 700,
                         textTransform: 'none',
                         position: 'absolute',
-                        //marginLeft: 59,
                         marginTop: 55,
                         color: 'white',
                     }}
@@ -107,7 +115,6 @@ export default function header_section() {
                         marginLeft: 1,
                         height: 45,
                         position: 'absolute',
-                        //marginLeft: 80,
                         marginTop: 55,
                         color: 'white',
                         fontFamily: 'Inter',

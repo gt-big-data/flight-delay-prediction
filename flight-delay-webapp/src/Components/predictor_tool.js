@@ -63,7 +63,7 @@ export default function Predictor_Tool() {
       <Box>
         <Box>
           <Stack className="toolTitleBox">
-            <b>Predictor Tool</b> <br />
+            <b id="predictorTool">Predictor Tool</b> <br />
             Enter in the Flight Number and the Departure Destination of your
             upcoming flight. Then click predict to recieve a percentage of delay
           </Stack>
