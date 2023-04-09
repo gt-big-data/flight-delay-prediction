@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from 'react';
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import "../App.css";
@@ -22,14 +22,34 @@ const theme = createTheme({
 
 export default function Predictor_Tool() {
   const [flightNumber, setFlightNumber] = useState("UA123");
+  const [departureAirport, setDepartureAirport] = useState("SFO");
+  const [arrivalAirport, setArrivalAirport] = useState("LAX");
   const [showError, setShowError] = useState(false);
+  const [getMessage, setGetMessage] = useState({})
 
   const onSubmit = (e) => {
     setShowError(true);
-    e.flightNumber = flightNumber;
-    console.log(e.flightNumber);
+    
+    console.log(flightNumber);
     console.log("Submitted");
   };
+  // const connectToBackend = () => {
+  //   fetch("http://localhost:5000/predict", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       flightNumber: flightNumber,
+  //       departureAirport: departureAirport,
+  //       arrivalAirport: arrivalAirport,
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //     });
+  // }
   return (
     <FormControl
       onSubmit={onSubmit}
@@ -190,27 +210,19 @@ export default function Predictor_Tool() {
               label="Flight Number*"
               variant="outlined"
               onChange={(e) => {setFlightNumber(e.target.value)}}
-              // sx={{
-              //     border: "1px solid #001E6C",
-              //     boxShadow: "inset 4px 4px 8px rgba(0, 0, 0, 0.25)",
-              //     borderRadius: "16px",
-              //     fontFamily: 'Poppins',
-              //     fontStyle: "normal",
-              //     fontWeight: 300,
-              //     color: "#808FB5",
-
-              // }}
             />
             <TextField
               name="departing"
               id="Departing"
               label="Departing From*"
+              onChange={(e) => {setDepartureAirport(e.target.value)}}
             />
             <TextField
               name="arrival"
               id="Arrival"
               label="Arriving At*"
               variant="outlined"
+              onChange={(e) => {setArrivalAirport(e.target.value)}}
             />
           </Stack>
         </Stack>
