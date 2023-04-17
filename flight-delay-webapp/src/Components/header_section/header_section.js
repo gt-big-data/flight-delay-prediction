@@ -92,7 +92,7 @@ export default function header_section() {
                         left: '50%',
                         right: '50%',
                         width: 150,
-                        marginLeft: -20,
+                        marginLeft: -10,
                         height: 45,
                         fontFamily: 'Inter',
                         fontWeight: 700,
@@ -103,7 +103,7 @@ export default function header_section() {
                     }}
                 >Prediction Tool</Button>
 
-                <Button
+                {/* <Button
                     variant="contained"
                     color='secondary'
                     disableElevation
@@ -121,7 +121,7 @@ export default function header_section() {
                         fontWeight: 700,
                         textTransform: 'none',
                     }}
-                >Data Visual Tool</Button>
+                >Data Visual Tool</Button> */}
             </ThemeProvider>
             <Box
                 sx={{

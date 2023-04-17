@@ -3,7 +3,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import "../App.css";
 import InputLabel from '@mui/material/InputLabel';
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import FormControl from "@mui/material/FormControl";
 import Alert from "@mui/material/Alert";
@@ -34,6 +34,9 @@ export default function Predictor_Tool() {
   const [arrivalAirport, setArrivalAirport] = useState("");
   const [showError, setShowError] = useState(false);
   const [weekDay, setWeekDay] = useState("");
+  const [departureDelay, setDepartureDelay] = useState("");
+  const [prediction, setPrediction] = useState("");
+
 
   const [airlineOptions, setAirlineOptions] = useState([]);
   const [destinationOptions, setDestinationOptions] = useState([]);
@@ -72,6 +75,9 @@ export default function Predictor_Tool() {
   const handleDepartureChange = (event) => {
     setDepartureAirport(event.target.value);
   };
+  const handleDepartureDelayChange = (event) => {
+    setDepartureDelay(event.target.value);
+  };
   const handleArrivalChange = (event) => {
     setArrivalAirport(event.target.value);
   };
@@ -88,7 +94,7 @@ export default function Predictor_Tool() {
       ORIGIN: departureAirport, 
       DEST: arrivalAirport, 
       AIRLINE: airline,
-      DEP_DELAY: 0,
+      DEP_DELAY: departureDelay,
       DAY_OF_WEEK: weekDay
     };
     const jsonData = JSON.stringify(data);
@@ -96,13 +102,26 @@ export default function Predictor_Tool() {
     fetch('http://localhost:5000/predict', {
       method: 'POST',
       headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: jsonData
     })
     .then(response => response.json())
     .then(data => {
       console.log(data);
+      switch(data.prediction) {
+        case "DEL_0_30":
+          setPrediction("Delayed 0-30 Minutes");
+          break;
+        case "DEL_30_60":
+          setPrediction("Delayed 30-60 Minutes");
+          break;
+        case "DEL_60":
+          setPrediction("Delayed 60+ Minutes");
+          break;
+        default:
+          setPrediction(data.prediction);
+      }
     })
    
   };
@@ -138,127 +157,6 @@ export default function Predictor_Tool() {
             gap: 2,
           }}
         >
-          <Stack
-            id="leftDelayedSection"
-            sx={{
-              display: "flex",
-              gap: 2,
-              width: 520, // 493
-              paddingY: 5,
-              border: 2
-            }}
-          >
-            <Stack
-              direction="row"
-              id="rowsOfDelay"
-              sx={{
-                display: "flex",
-                gap: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 1,
-                  background: "#F7FB39",
-                  border: 1,
-                  borderRadius: 45,
-                  width: 30,
-                  height: 30,
-                }}
-              ></Box>
-              <Box
-                sx={{
-                  fontFamily: "Inter",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  fontSize: 25,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                0 - 30 Minutes Delayed
-              </Box>
-              <Box sx={{ border: 1, width: 129 }}>{/* OUTPUT */}</Box>
-            </Stack>
-
-            <Stack
-              direction="row"
-              sx={{
-                display: "flex",
-                gap: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 1,
-                  background: "#F7CF43",
-                  border: 1,
-                  borderRadius: 45,
-                  width: 30,
-                  height: 30,
-                }}
-              ></Box>
-              <Box
-                sx={{
-                  fontFamily: "Inter",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  fontSize: 25,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                30 - 60 Minutes Delayed
-              </Box>
-              <Box sx={{ border: 1, width: 129 }}>{/* OUTPUT */}</Box>
-            </Stack>
-
-            <Stack
-              direction="row"
-              sx={{
-                display: "flex",
-                gap: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 1,
-                  background: "#F77943",
-                  border: 1,
-                  borderRadius: 45,
-                  width: 30,
-                  height: 30,
-                }}
-              ></Box>
-              <Box
-                sx={{
-                  fontFamily: "Inter",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  fontSize: 25,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                60+ Minutes Delayed
-              </Box>
-              <Box sx={{ border: 1, width: 129 }}>{/* OUTPUT */}</Box>
-            </Stack>
-          </Stack>
-
-
           <Stack
             sx={{
               display: "flex",
@@ -323,14 +221,25 @@ export default function Predictor_Tool() {
                 label="Day of the Week"
                 onChange={handleWeekDayChange}
               >
-                  <MenuItem value={"Monday"}>Monday</MenuItem>
-                  <MenuItem value={"Tuesday"}>Tuesday</MenuItem>
-                  <MenuItem value={"Wednesday"}>Wednesday</MenuItem>
-                  <MenuItem value={"Thursday"}>Thursday</MenuItem>
-                  <MenuItem value={"Friday"}>Friday</MenuItem>
-                  <MenuItem value={"Saturday"}>Saturday</MenuItem>
-                  <MenuItem value={"Sunday"}>Sunday</MenuItem>
+                  <MenuItem value={"MON"}>Monday</MenuItem>
+                  <MenuItem value={"TUE"}>Tuesday</MenuItem>
+                  <MenuItem value={"WED"}>Wednesday</MenuItem>
+                  <MenuItem value={"THU"}>Thursday</MenuItem>
+                  <MenuItem value={"FRI"}>Friday</MenuItem>
+                  <MenuItem value={"SAT"}>Saturday</MenuItem>
+                  <MenuItem value={"SUN"}>Sunday</MenuItem>
               </Select>
+            </FormControl>
+            <FormControl sx={{gap: 2, height: 50}}>
+              <TextField
+                type="number"
+                value={departureDelay}
+                padding="50 50"
+                line-height="500"
+                label="Departure Delay"
+                onChange={handleDepartureDelayChange}
+              >
+              </TextField>
             </FormControl>
           </Stack>
         </Stack>
@@ -349,6 +258,7 @@ export default function Predictor_Tool() {
             <Button
               type="submit"
               onClick={(e) => {
+                setPrediction("Running the Model...");
                 onSubmit(e);
               }}
               variant="contained"
@@ -372,7 +282,7 @@ export default function Predictor_Tool() {
             {showError && (
               <Alert severity="info" sx={{ mt: 2 }}>
                 {" "}
-                Running the Model...{" "}
+                {prediction}{" "}
               </Alert>
             )}
           </ThemeProvider>
