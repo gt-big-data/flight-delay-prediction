@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import "../App.css";
-import { Box, TextField } from "@mui/material";
-import { fontSize, fontStyle } from "@mui/system";
-import Input from "@mui/material/Input";
+import InputLabel from '@mui/material/InputLabel';
+import { Box } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import FormControl from "@mui/material/FormControl";
 import Alert from "@mui/material/Alert";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Papa from "papaparse";
+import AirlineData from "./data/airlines.csv";
+import DestinationData from "./data/destination.csv";
+import OriginData from "./data/origin.csv";
+
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -20,36 +27,86 @@ const theme = createTheme({
   },
 });
 
+
 export default function Predictor_Tool() {
-  const [flightNumber, setFlightNumber] = useState("UA123");
-  const [departureAirport, setDepartureAirport] = useState("SFO");
-  const [arrivalAirport, setArrivalAirport] = useState("LAX");
+  const [airline, setAirline] = useState("");
+  const [departureAirport, setDepartureAirport] = useState("");
+  const [arrivalAirport, setArrivalAirport] = useState("");
   const [showError, setShowError] = useState(false);
-  const [getMessage, setGetMessage] = useState({})
+  const [weekDay, setWeekDay] = useState("");
+
+  const [airlineOptions, setAirlineOptions] = useState([]);
+  const [destinationOptions, setDestinationOptions] = useState([]);
+  const [originOptions, setOriginOptions] = useState([]);
+
+  useEffect(() => {
+    const fetchAirlineData = async () => {
+      const response = await fetch(AirlineData);
+      const text = await response.text();
+      const parsed = Papa.parse(text, { header: false });
+      const airlineCodes = parsed.data.flat();
+      setAirlineOptions(airlineCodes);
+    };
+    fetchAirlineData();
+    const fetchDestinationData = async () => {
+      const response = await fetch(DestinationData);
+      const text = await response.text();
+      const parsed = Papa.parse(text, { header: false });
+      const destinations = parsed.data.flat();
+      setDestinationOptions(destinations);
+    };
+    fetchDestinationData();
+    const fetchOriginData = async () => {
+      const response = await fetch(OriginData);
+      const text = await response.text();
+      const parsed = Papa.parse(text, { header: false });
+      const origins = parsed.data.flat();
+      setOriginOptions(origins);
+    };
+    fetchOriginData();
+  }, []);
+
+  const handleAirlineChange = (event) => {
+    setAirline(event.target.value);
+  };
+  const handleDepartureChange = (event) => {
+    setDepartureAirport(event.target.value);
+  };
+  const handleArrivalChange = (event) => {
+    setArrivalAirport(event.target.value);
+  };
+  const handleWeekDayChange = (event) => {
+    setWeekDay(event.target.value);
+  };
 
   const onSubmit = (e) => {
     setShowError(true);
-    
-    console.log(flightNumber);
-    console.log("Submitted");
+    createJSONFile();
   };
-  // const connectToBackend = () => {
-  //   fetch("http://localhost:5000/predict", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       flightNumber: flightNumber,
-  //       departureAirport: departureAirport,
-  //       arrivalAirport: arrivalAirport,
-  //     }),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //     });
-  // }
+  const createJSONFile = () => {
+    const data = { 
+      ORIGIN: departureAirport, 
+      DEST: arrivalAirport, 
+      AIRLINE: airline,
+      DEP_DELAY: 0,
+      DAY_OF_WEEK: weekDay
+    };
+    const jsonData = JSON.stringify(data);
+    console.log(jsonData);
+    fetch('http://localhost:5000/predict', {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+    },
+    body: jsonData
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+   
+  };
+
   return (
     <FormControl
       onSubmit={onSubmit}
@@ -70,11 +127,14 @@ export default function Predictor_Tool() {
         </Box>
         <Stack
           direction="row"
+          className=""
           sx={{
             display: "flex",
             margin: "auto",
             justifyContent: "center",
             alignItems: "center",
+            marginTop: 4,
+            marginBottom: 4,
             gap: 2,
           }}
         >
@@ -83,8 +143,9 @@ export default function Predictor_Tool() {
             sx={{
               display: "flex",
               gap: 2,
-              width: 550, // 493
-              paddingY: 8,
+              width: 520, // 493
+              paddingY: 5,
+              border: 2
             }}
           >
             <Stack
@@ -121,7 +182,7 @@ export default function Predictor_Tool() {
               >
                 0 - 30 Minutes Delayed
               </Box>
-              <Box sx={{ border: 1, width: 129 }}></Box>
+              <Box sx={{ border: 1, width: 129 }}>{/* OUTPUT */}</Box>
             </Stack>
 
             <Stack
@@ -157,7 +218,7 @@ export default function Predictor_Tool() {
               >
                 30 - 60 Minutes Delayed
               </Box>
-              <Box sx={{ border: 1, width: 129 }}></Box>
+              <Box sx={{ border: 1, width: 129 }}>{/* OUTPUT */}</Box>
             </Stack>
 
             <Stack
@@ -193,9 +254,10 @@ export default function Predictor_Tool() {
               >
                 60+ Minutes Delayed
               </Box>
-              <Box sx={{ border: 1, width: 129 }}></Box>
+              <Box sx={{ border: 1, width: 129 }}>{/* OUTPUT */}</Box>
             </Stack>
           </Stack>
+
 
           <Stack
             sx={{
@@ -204,26 +266,72 @@ export default function Predictor_Tool() {
               width: 493,
             }}
           >
-            <TextField
-              name="flightNumber"
-              id="Flight Number"
-              label="Flight Number*"
-              variant="outlined"
-              onChange={(e) => {setFlightNumber(e.target.value)}}
-            />
-            <TextField
-              name="departing"
-              id="Departing"
-              label="Departing From*"
-              onChange={(e) => {setDepartureAirport(e.target.value)}}
-            />
-            <TextField
-              name="arrival"
-              id="Arrival"
-              label="Arriving At*"
-              variant="outlined"
-              onChange={(e) => {setArrivalAirport(e.target.value)}}
-            />
+            <FormControl sx={{gap: 2}}>
+              <InputLabel id="airline-label">Airline</InputLabel>
+              <Select
+                labelId="airline-select-label"
+                id="airline-select"
+                value={airline}
+                label="Airline"
+                onChange={handleAirlineChange}
+              >
+                {airlineOptions.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{gap: 2}}>
+              <InputLabel id="departure-label">Departing From</InputLabel>
+              <Select
+                labelId="departing-select-label"
+                id="departing-select"
+                value={departureAirport}
+                label="Departing from"
+                onChange={handleDepartureChange}
+              >
+                {originOptions.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{gap: 2}}>
+              <InputLabel id="arriving-label">Arriving At*</InputLabel>
+              <Select
+                labelId="arriving-select-label"
+                id="arriving-select"
+                value={arrivalAirport}
+                label="Arriving At*"
+                onChange={handleArrivalChange}
+              >
+                {destinationOptions.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{gap: 2}}>
+              <InputLabel id="day-label">Day of the Week</InputLabel>
+              <Select
+                labelId="day-select-label"
+                id="day-select"
+                value={weekDay}
+                label="Day of the Week"
+                onChange={handleWeekDayChange}
+              >
+                  <MenuItem value={"Monday"}>Monday</MenuItem>
+                  <MenuItem value={"Tuesday"}>Tuesday</MenuItem>
+                  <MenuItem value={"Wednesday"}>Wednesday</MenuItem>
+                  <MenuItem value={"Thursday"}>Thursday</MenuItem>
+                  <MenuItem value={"Friday"}>Friday</MenuItem>
+                  <MenuItem value={"Saturday"}>Saturday</MenuItem>
+                  <MenuItem value={"Sunday"}>Sunday</MenuItem>
+              </Select>
+            </FormControl>
           </Stack>
         </Stack>
 
@@ -261,7 +369,12 @@ export default function Predictor_Tool() {
             >
               Predict
             </Button>
-            {showError && (<Alert severity="info" sx={{mt: 2}}> Running the Model... </Alert>)}
+            {showError && (
+              <Alert severity="info" sx={{ mt: 2 }}>
+                {" "}
+                Running the Model...{" "}
+              </Alert>
+            )}
           </ThemeProvider>
         </Stack>
       </Box>
