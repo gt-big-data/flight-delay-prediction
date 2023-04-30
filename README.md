@@ -9,7 +9,6 @@ Repository for Big Data Big Impact flight delay prediction project - Spring 2023
 * Keerthana Thotakura
 * Snehanjali Jayanthi
 * Aryan Mittal
-* Eric Sander
 * Sohum Gaitonde
 * Andrew DiBiasio
 * Maximus Genio
@@ -19,7 +18,6 @@ Repository for Big Data Big Impact flight delay prediction project - Spring 2023
 * Vibha Guru
 * Chandini Kalidindi
 * Anirudh Arunkumar
-* Sirish Sigili
 
 ## Data Visualization
 * Ishan Panchamia
