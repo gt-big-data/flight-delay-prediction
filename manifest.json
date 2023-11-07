@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Hello Extensions",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "hello_icon.png"
+  },
+
+    "content_scripts": [
+      {
+        "matches": ["*://www.delta.com/*"],
+        "js": ["deltaScript.js"],
+        "run_at": "document_idle",
+        "all_frames": true
+      },
+      {
+        "matches": ["https://booking.flyfrontier.com/Flight/Select"],
+        "js": ["frontierScript.js"],
+        "run_at": "document_idle",
+        "all_frames": true
+      },
+      {
+        "matches": ["*://www.southwest.com/*"],
+        "js": ["southwestScript.js"],
+        "run_at": "document_idle",
+        "all_frames": true
+      },
+      {
+        "matches": ["*://www.aa.com/*"],
+        "js": ["AAScript.js"],
+        "run_at": "document_idle",
+        "all_frames": true
+      }
+    ],
+  "permissions": ["scripting","activeTab"],
+  "host_permissions": ["<all_urls>"]
+}
