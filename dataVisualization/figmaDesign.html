@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Flights</title>
+<style>
+  .flight {
+    border-bottom: 2px solid black;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .airline-logo {
+    width: 100px; /* or the size that fits your design */
+  }
+  
+  .flight-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .flight-times, .flight-duration, .flight-type, .flight-path {
+    margin: 0 10px;
+  }
+
+  .header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">MY FLIGHTS</div>
+
+<div class="flight">
+  <div class="flight-info">
+    <img src="path-to-hawaiian-logo.png" alt="Hawaiian Airlines" class="airline-logo">
+    <p class="flight-times">7:32AM - 9:34AM</p>
+    <p class="flight-duration">5 hr 2 min</p>
+    <p class="flight-type">Nonstop</p>
+    <p class="flight-path">ATL - LAX</p>
+  </div>
+</div>
+
+<div class="flight">
+  <div class="flight-info">
+    <img src="path-to-united-logo.png" alt="United Airlines" class="airline-logo">
+    <p class="flight-times">7:00AM - 9:55AM</p>
+    <p class="flight-duration">5 hr 55 min</p>
+    <p class="flight-type">Nonstop</p>
+    <p class="flight-path">LAX - HNL</p>
+  </div>
+</div>
+
+<div class="flight">
+  <div class="flight-info">
+    <img src="path-to-delta-logo.png" alt="Delta Airlines" class="airline-logo">
+    <p class="flight-times">6:15AM - 8:55AM</p>
+    <p class="flight-duration">2 hr 40 min</p>
+    <p class="flight-type">Connecting</p>
+    <p class="flight-path">SJC - SEA</p>
+  </div>
+</div>
+
+</body>
+</html>
