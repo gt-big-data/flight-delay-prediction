@@ -10,13 +10,17 @@ const observer = new MutationObserver(function () {
 observer.observe(document.body, { childList: true, subtree: true });
 
 function processFlightInfo() {
+  console.log("Processing");
   let flightInfoArray = [];
+  window.noDelayFlights = []; // Array to store flights with no delay
+
   const flightCardDivs = document.querySelectorAll('.flight-card__body');
 
   if (flightCardDivs.length > 0) {
     observer.disconnect(); // Stop observing changes to prevent infinite loop
 
     flightCardDivs.forEach((flightCardDiv, index) => {
+
       const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c230]');
       if (flightNumberSpan) {
         const flightNumber = flightNumberSpan.textContent.trim().split(' ')[0];
@@ -28,6 +32,18 @@ function processFlightInfo() {
           leastDelay = delayMinutes;
           leastDelayDivId = `flight-${index}`;
           flightCardDiv.id = leastDelayDivId; // Assign a unique ID
+        }
+        if (delayMinutes === 0) {
+          window.noDelayFlights.push({
+            flightNumber: flightNumber,
+            delayMinutes: delayMinutes,
+            imageSrc: 'https://oconnorhardware.com/wp-content/uploads/2023/01/Delta-Logo.png',
+            flightTimes: '11:11PM - 11:11AM',
+            airlineName: 'Delta',
+            duration: '11min',
+            fromTo: 'ATL-BOS'
+            // Add other relevant flight details here
+          });
         }
       }
     });
@@ -96,4 +112,12 @@ function addMostPunctualButton(leastDelayDivId) {
   } else {
     console.error('Target container not found');
   }
+
+  // At the end of deltaScript.js
+  console.log("Sending message");
+
+  chrome.runtime.sendMessage({ action: "deltaScriptCompleted" });
 }
+
+
+
