@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Delay Detector",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "action": {
+    "default_popup": "html/index.html",
+    "default_icon": "images/logo.png"
+  },
+
+    "content_scripts": [
+      {
+        "matches": ["*://www.delta.com/*"],
+        "js": ["js/deltaScript.js"],
+        "run_at": "document_idle",
+        "all_frames": true
+      },
+      {
+        "matches": ["https://booking.flyfrontier.com/Flight/Select"],
+        "js": ["js/deltaScript.js"],
+        "run_at": "document_idle",
+        "all_frames": true
+      },
+      {
+        "matches": ["*://www.southwest.com/*"],
+        "js": ["js/southwestScript.js"],
+        "run_at":"document_idle",
+        "all_frames":true
+      }
+    ],
+    
+  
+  "permissions": ["scripting","activeTab", "tabs"],
+  "host_permissions": ["<all_urls>"]
+}
