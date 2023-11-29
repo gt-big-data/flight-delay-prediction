@@ -114,9 +114,9 @@ function addMostPunctualButton(leastDelayDivId) {
   }
 
   // At the end of deltaScript.js
-  console.log("Sending message");
+  // console.log("Sending message");
 
-  chrome.runtime.sendMessage({ action: "deltaScriptCompleted" });
+  // chrome.runtime.sendMessage({ action: "deltaScriptCompleted" });
 }
 
 
