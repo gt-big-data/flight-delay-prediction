@@ -17,7 +17,6 @@ Repository for Big Data Big Impact flight delay prediction project - Spring 2023
 * Gabriel Ragy
 * Srimaaye Jegannathan
 * Jaden Lee
-* 
 
 ## Data Visualization
 * Alex Chen
