@@ -1,5 +1,5 @@
 # Flight Delay Prediction
-Repository for Big Data Big Impact flight delay prediction project - Spring 2023.
+Repository for Big Data Big Impact flight delay prediction project - 2023
 
 # Group Members
 ## Project Leads
