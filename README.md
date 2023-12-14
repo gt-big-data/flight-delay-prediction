@@ -5,22 +5,20 @@ Repository for Big Data Big Impact flight delay prediction project - Spring 2023
 ## Project Leads
 * Ethan Mendes
 * Saniya Srivastava
+
 ## Analysis
-* Keerthana Thotakura
-* Snehanjali Jayanthi
-* Aryan Mittal
-* Sohum Gaitonde
-* Andrew DiBiasio
-* Maximus Genio
+* Sai Anoop Avunuri
+* Ari Nair
+* Matthew Fuertes
+* Prabhav Gupta
+* Shreya Malpani
 
 ## Platform
-* Michael Leonick
-* Vibha Guru
-* Chandini Kalidindi
-* Anirudh Arunkumar
+* Gabriel Ragy
+* Srimaaye Jegannathan
+* Jaden Lee
+* 
 
 ## Data Visualization
-* Ishan Panchamia
-* Mwenda Mbui
-* Thomas Chin
-* Aishani Chakraborty
+* Alex Chen
+* Christian Chin
