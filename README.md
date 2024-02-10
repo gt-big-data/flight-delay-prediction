@@ -13,4 +13,5 @@ Repository for Big Data Big Impact flight delay prediction project - 2023
 * 
 
 ## Data Visualization
-* 
+* Daniel Ayoung-Chee
+*
