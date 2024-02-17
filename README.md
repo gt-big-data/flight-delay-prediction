@@ -7,7 +7,7 @@ Repository for Big Data Big Impact flight delay prediction project - 2023
 * Saniya Srivastava
 
 ## Analysis
-* 
+* Max Li
 
 ## Platform
 * Gabriel Joseph Ragy
