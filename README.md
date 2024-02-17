@@ -8,6 +8,7 @@ Repository for Big Data Big Impact flight delay prediction project - 2023
 
 ## Analysis
 * Max Li
+* Davis Clark
 
 ## Platform
 * Gabriel Joseph Ragy
