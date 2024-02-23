@@ -1,4 +1,4 @@
-console.log("Delta script started");
+console.log("Delta script started mk2");
 
 let leastDelay = 121; // Start with a delay higher than the maximum possible (2 hours in minutes)
 let leastDelayDivId = null;
@@ -21,7 +21,7 @@ function processFlightInfo() {
 
     flightCardDivs.forEach((flightCardDiv, index) => {
 
-      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c230]');
+      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c239]');
       if (flightNumberSpan) {
         const flightNumber = flightNumberSpan.textContent.trim().split(' ')[0];
         flightInfoArray.push(flightNumber);
