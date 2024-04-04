@@ -1,0 +1,112 @@
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Container styles */
+.div {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 300px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styles */
+.div-2 {
+  height: 30px;
+  background: linear-gradient(180deg, #9a0303 0%, #ff7272 98%);
+}
+
+/* Main content styles */
+.div-3 {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+/* Flight details styles */
+.div-4 {
+  display: flex;
+  gap: 20px;
+}
+
+.column {
+  flex: 1;
+}
+
+.column-2 {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.div-5 img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.div-6 {
+  margin-top: 10px;
+}
+
+.div-7 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.div-8 {
+  font-size: 14px;
+  color: #666;
+}
+
+.div-9 {
+  font-size: 14px;
+  color: #0079e9;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Footer styles */
+.div-10 {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.div-15 {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.div-16 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.div-17 {
+  font-size: 24px;
+  color: #00d415;
+  margin-top: 5px;
+}
+
+.div-18 {
+  font-size: 11px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.div-19 {
+  font-size: 10px;
+  color: #0079e9;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 5px;
+}
