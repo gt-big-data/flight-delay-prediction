@@ -1,134 +1,50 @@
-@font-face {
-  font-family: "ReadexProLight";
-  src: url(ReadexPro-Light.ttf);
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Information</title>
+  <link rel="stylesheet" href="styles.css">
 
-@font-face {
-  font-family: "ReadexPro";
-  src: url(ReadexPro-Regular.ttf);
-}
+</head>
+<body>
+  <div class="background">
+    <h1>My Flights</h1>
+  
+    <div class="settings">
+      <img src="settings.png" style="width:30px;height:30px;">
+    </div>
+    
+    <div class="airplane">
+      <img src="airplane.png" style="width:30px;height:30px;">
+    </div>
+    
+    <div class="globe">
+      <img src="globe.svg" style="width:30px;height:30px;">
+    </div>
 
-.background {
-  position: sticky;
-  top: 0;
-  width: 450px;
-  height: 300px;
-  color: rgb(0, 0, 0);
-  z-index: 1;
-  font-family: "ReadexPro";
-}
+    <div class="gradientbox"> 
+    </div>
 
-.box1 {
-  float: left;
-  width: 390px; 
-  height: 100px;
-  background-color: rgb(251, 251, 251);
-  color: rgb(0, 0, 0);
-  border: 0.5px solid rgb(155, 155, 155);
-  padding: 15px;
-  box-shadow: 3px 3px 5px rgb(63, 63, 63);
-  z-index: 3;
-  /* overflow-x: hidden; 
-  overflow-y: scroll; */ 
-  border-radius: 3px;
-  top: 50%; 
-  left: 50%; 
-  transform: translate(0%,-25%);
-  font-family: "ReadexProLight";
-}
+    <div class = "box1">
+      <img src="delta.png" class = "delta" style="width:120px;height:120px;">
+      <h2 class="Date">Tue, Jan 7</h2>
 
-.box1 img { 
-  float: left; 
-  top: 50%;
-  left: 50%; 
-  transform: translate(-10%,-5%);
-} 
+      <p class="Time">9:00 - 10:53pm</p>
 
-.box1 .Date {
-  float: left; 
-  top: 50%;
-  left: 50%; 
-  transform: translate(-20%,-90%);
-}
+      <p class="Span">1 hr 53 mins </p>
 
-.box1 .Time {
-  top: 50%;
-  left: 50%; 
-  transform: translate(-24%,150%);
-}
+      <p class = "DeltaAirlines">Delta Airlines</a>
 
-.box1 .DeltaAirlines { 
-  top: 50%;
-  left: 50%; 
-  transform: translate(-2%,0%);
-  cursor: pointer;
-}
+      <h3 class="DelayChance">Chance of Delay:</h3>
 
-.box1 .Span {
-  top: 50%;
-  left: 50%; 
-  transform: translate(0%,-30%);
-} 
+      <h1 style="color:rgb(0, 255, 4);" class="Percent">6%</h1>
 
-.box1 .DelayChance {
-  float: right; 
-  top: 50%;
-  left: 50%; 
-  transform: translate(10%,-625%);
-}
+      <p class="Possible">Possible delay time 2hrs</p>
 
-.box1 .Percent {
-  top: 50%;
-  left: 50%; 
-  transform: translate(55%,-250%);
-}
+      <p class = "What">What does this mean?</p>
+      </div>
 
-.box1 .Possible {
-  top: 50%;
-  left: 50%; 
-  transform: translate(67%,-520%);
-}
-
-.box1 .What {
-  top: 50%;
-  left: 50%; 
-  transform: translate(70%,-530%);
-  cursor: pointer;
-}
-
-.gradientbox {
-  float: left;
-  width: 20px;
-  height: 130px;
-  background-image: linear-gradient(220deg, rgb(196, 0, 0), rgb(255, 143, 143));
-  z-index: 2;
-  border-radius: 3px;
-  box-shadow: 3px 3px 5px rgb(63, 63, 63);
-}
-
-.globe {
-  position: sticky;
-  float: right; 
-  top: 50%;
-  left: 50%; 
-  transform: translate(-30%,-460%);
-  cursor: pointer;
-}
-
-.airplane {
-  position: sticky;
-  float: right;  
-  top: 50%;
-  left: 50%; 
-  transform: translate(-20%,-460%);
-  cursor: pointer;
-}
-
-.settings {
-  position: sticky;
-  float: right;
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-10%,-460%);
-  cursor: pointer;
-}
+  </div>  
+</body>
+</html>
