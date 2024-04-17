@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "ReadexProLight";
+  src: url(ReadexPro-Light.ttf);
+}
+
+@font-face {
+  font-family: "ReadexPro";
+  src: url(ReadexPro-Regular.ttf);
+}
+
 .background {
   position: sticky;
   top: 0;
@@ -5,6 +15,7 @@
   height: 300px;
   color: rgb(0, 0, 0);
   z-index: 1;
+  font-family: "ReadexPro";
 }
 
 .box1 {
@@ -17,18 +28,73 @@
   padding: 15px;
   box-shadow: 3px 3px 5px rgb(63, 63, 63);
   z-index: 3;
-  overflow-x: hidden; 
-  overflow-y: scroll; 
+  /* overflow-x: hidden; 
+  overflow-y: scroll; */ 
   border-radius: 3px;
   top: 50%; 
   left: 50%; 
   transform: translate(0%,-25%);
+  font-family: "ReadexProLight";
 }
 
 .box1 img { 
   float: left; 
-  border: 0.5px solid black; 
+  top: 50%;
+  left: 50%; 
+  transform: translate(-10%,-5%);
 } 
+
+.box1 .Date {
+  float: left; 
+  top: 50%;
+  left: 50%; 
+  transform: translate(-20%,-90%);
+}
+
+.box1 .Time {
+  top: 50%;
+  left: 50%; 
+  transform: translate(-24%,150%);
+}
+
+.box1 .DeltaAirlines { 
+  top: 50%;
+  left: 50%; 
+  transform: translate(-2%,0%);
+  cursor: pointer;
+}
+
+.box1 .Span {
+  top: 50%;
+  left: 50%; 
+  transform: translate(0%,-30%);
+} 
+
+.box1 .DelayChance {
+  float: right; 
+  top: 50%;
+  left: 50%; 
+  transform: translate(10%,-625%);
+}
+
+.box1 .Percent {
+  top: 50%;
+  left: 50%; 
+  transform: translate(55%,-250%);
+}
+
+.box1 .Possible {
+  top: 50%;
+  left: 50%; 
+  transform: translate(67%,-520%);
+}
+
+.box1 .What {
+  top: 50%;
+  left: 50%; 
+  transform: translate(70%,-530%);
+  cursor: pointer;
+}
 
 .gradientbox {
   float: left;
