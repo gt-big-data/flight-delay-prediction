@@ -1,7 +1,9 @@
-console.log("Delta script started mk2");
+console.log("Delta script started mk3");
 
 let leastDelay = 121; // Start with a delay higher than the maximum possible (2 hours in minutes)
 let leastDelayDivId = null;
+let originAirport = '';
+let destinationAirport = '';
 
 const observer = new MutationObserver(function () {
   processFlightInfo();
@@ -14,6 +16,19 @@ function processFlightInfo() {
   let flightInfoArray = [];
   window.noDelayFlights = []; // Array to store flights with no delay
 
+  // Extract origin and destination airport codes
+
+  const airportCodesElements = document.querySelectorAll('.search-segment-cities__city');
+  if (airportCodesElements && airportCodesElements.length >= 2) {
+    originAirport = airportCodesElements[0].textContent.trim();
+    destinationAirport = airportCodesElements[1].textContent.trim();
+    console.log('Origin Airport:', originAirport);
+    console.log('Destination Airport:', destinationAirport);
+  }
+
+
+
+
   const flightCardDivs = document.querySelectorAll('.flight-card__body');
 
   if (flightCardDivs.length > 0) {
@@ -21,7 +36,7 @@ function processFlightInfo() {
 
     flightCardDivs.forEach((flightCardDiv, index) => {
 
-      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c239]');
+      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c246]');
       if (flightNumberSpan) {
         const flightNumber = flightNumberSpan.textContent.trim().split(' ')[0];
         flightInfoArray.push(flightNumber);
