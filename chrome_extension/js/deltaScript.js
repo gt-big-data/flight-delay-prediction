@@ -44,14 +44,6 @@ async function processFlightInfo() {
       if (flightNumberSpan) {
         const flightNumber = flightNumberSpan.textContent.trim().split(' ')[0];
         flightInfoArray.push(flightNumber);
-        const delayMinutes = insertPredictedDelay(flightCardDiv);
-
-        // Check if this flight has the least delay
-        if (delayMinutes < leastDelay) {
-          leastDelay = delayMinutes;
-          leastDelayDivId = `flight-${flightInfoArray.length - 1}`;
-          flightCardDiv.id = leastDelayDivId; // Assign a unique ID
-        }
 
         try {
           const flightInfo = await getFlightCoordinates(flightNumber);
@@ -102,12 +94,67 @@ async function processFlightInfo() {
       }
     }
 
-    if (leastDelayDivId) {
-      addMostPunctualButton(leastDelayDivId);
-    }
+    // Make a batch prediction request to the Vertex AI endpoint
+    const normalizedData = {
+      "instances": fullFlightInformation.map(data => normalizeData(data, means, standardDeviations))
+    };
 
-    console.log('Flight Info Array:', flightInfoArray);
-    console.log('Full Flight Information:', fullFlightInformation);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer YOUR_ACCESS_TOKEN_HERE',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(normalizedData)
+    };
+
+    const endpoint = 'https://us-east1-aiplatform.googleapis.com/v1/projects/glassy-envoy-414219/locations/us-east1/endpoints/5332547831829889024:predict';
+
+    fetch(endpoint, options)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        displayPredictions(data.predictions);
+      })
+      .catch(error => console.error('Error:', error));
+  }
+}
+
+function displayPredictions(predictions) {
+  const flightCardDivs = document.querySelectorAll('.flight-card__body');
+
+  predictions.forEach((prediction, index) => {
+    const delayText = document.createElement('div');
+    const delayCategory = getDelayCategory(prediction);
+    delayText.textContent = delayCategory;
+
+    // Style adjustments
+    delayText.style.color = delayCategory === 'On time' ? '#497849' : '#e31d35';
+    delayText.style.fontSize = '1.2em'; // Larger font size
+    delayText.style.marginBottom = '10px'; // Bottom margin
+
+    flightCardDivs[index].appendChild(delayText);
+  });
+}
+
+function getDelayCategory(prediction) {
+  const maxIndex = prediction.indexOf(Math.max(...prediction));
+  switch (maxIndex) {
+    case 0:
+      return 'On time';
+    case 1:
+      return '0-30 min delay';
+    case 2:
+      return '30-60 min delay';
+    case 3:
+      return '60+ min delay';
+    default:
+      return 'Unknown';
   }
 }
 
@@ -140,36 +187,6 @@ async function getFlightCoordinates(flightNumber) {
     console.error(`Error fetching coordinates for flight ${flightNumber}:`, error);
     return null;
   }
-}
-
-function getRandomDelayMinutes() {
-  // 50% chance of no delay, otherwise a random delay between 10 minutes and 2 hours
-  return Math.random() < 0.8 ? 0 : Math.floor(Math.random() * (90 - 10 + 1)) + 10;
-}
-
-function insertPredictedDelay(div) {
-  const delayMinutes = getRandomDelayMinutes();
-  const delayText = document.createElement('div');
-
-  // Convert minutes into hours and minutes format
-  let delayDisplay;
-  if (delayMinutes === 0) {
-    delayDisplay = 'No Predicted Delay';
-  } else {
-    const hours = Math.floor(delayMinutes / 60);
-    const minutes = delayMinutes % 60;
-    delayDisplay = `${hours > 0 ? hours + 'hr ' : ''}${minutes}min Delay Predicted`;
-  }
-
-  delayText.textContent = delayDisplay;
-
-  // Style adjustments
-  delayText.style.color = delayMinutes === 0 ? '#497849' : '#e31d35';
-  delayText.style.fontSize = '1.2em'; // Larger font size
-  delayText.style.marginBottom = '10px'; // Bottom margin
-
-  div.appendChild(delayText);
-  return delayMinutes;
 }
 
 function addMostPunctualButton(leastDelayDivId) {
@@ -213,4 +230,99 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 function deg2rad(deg) {
   return deg * (Math.PI / 180);
+}
+
+const means = {
+  DISTANCE: 789.404628,
+  OLAT: 36.683523,
+  OLONG: -95.414015,
+  DLAT: 36.684935,
+  DLONG: -95.417249,
+  DAY_OF_WEEK_FRI: 0.148858,
+  DAY_OF_WEEK_MON: 0.148651,
+  DAY_OF_WEEK_SAT: 0.121597,
+  DAY_OF_WEEK_SUN: 0.140578,
+  DAY_OF_WEEK_THU: 0.148729,
+  DAY_OF_WEEK_TUE: 0.144770,
+  DAY_OF_WEEK_WED: 0.146816,
+  AIRLINE_9E: 0.016993,
+  AIRLINE_AA: 0.108597,
+  AIRLINE_AS: 0.027325,
+  AIRLINE_B6: 0.040371,
+  AIRLINE_CO: 0.012099,
+  AIRLINE_DL: 0.128372,
+  AIRLINE_EV: 0.075484,
+  AIRLINE_F9: 0.014779,
+  AIRLINE_FL: 0.019830,
+  AIRLINE_G4: 0.001369,
+  AIRLINE_HA: 0.012263,
+  AIRLINE_MQ: 0.051400,
+  AIRLINE_NK: 0.009556,
+  AIRLINE_NW: 0.004794,
+  AIRLINE_OH: 0.009131,
+  AIRLINE_OO: 0.101614,
+  AIRLINE_UA: 0.078905,
+  AIRLINE_US: 0.043326,
+  AIRLINE_VX: 0.006368,
+  AIRLINE_WN: 0.197376,
+  AIRLINE_XE: 0.017825,
+  AIRLINE_YV: 0.017170,
+  AIRLINE_YX: 0.005053
+};
+
+const standardDeviations = {
+  DISTANCE: 594.768115,
+  OLAT: 5.897370,
+  OLONG: 18.183444,
+  DLAT: 5.897820,
+  DLONG: 18.190081,
+  DAY_OF_WEEK_FRI: 0.355949,
+  DAY_OF_WEEK_MON: 0.355744,
+  DAY_OF_WEEK_SAT: 0.326820,
+  DAY_OF_WEEK_SUN: 0.347586,
+  DAY_OF_WEEK_THU: 0.355821,
+  DAY_OF_WEEK_TUE: 0.351869,
+  DAY_OF_WEEK_WED: 0.353923,
+  AIRLINE_9E: 0.129244,
+  AIRLINE_AA: 0.311133,
+  AIRLINE_AS: 0.163028,
+  AIRLINE_B6: 0.196829,
+  AIRLINE_CO: 0.109328,
+  AIRLINE_DL: 0.334504,
+  AIRLINE_EV: 0.264170,
+  AIRLINE_F9: 0.120666,
+  AIRLINE_FL: 0.139416,
+  AIRLINE_G4: 0.036980,
+  AIRLINE_HA: 0.110056,
+  AIRLINE_MQ: 0.220812,
+  AIRLINE_NK: 0.097287,
+  AIRLINE_NW: 0.069071,
+  AIRLINE_OH: 0.095118,
+  AIRLINE_OO: 0.302141,
+  AIRLINE_UA: 0.269591,
+  AIRLINE_US: 0.203589,
+  AIRLINE_VX: 0.079543,
+  AIRLINE_WN: 0.398019,
+  AIRLINE_XE: 0.132315,
+  AIRLINE_YV: 0.129905,
+  AIRLINE_YX: 0.070906
+};
+
+// Function to normalize value
+function normalize(value, mean, stdDev) {
+  return (value - mean) / stdDev;
+}
+
+// Normalize all values
+function normalizeData(data, means, standardDeviations) {
+  const normalizedData = [];
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const normalizedValue = normalize(data[key], means[key], standardDeviations[key]);
+      normalizedData.push(normalizedValue);
+    }
+  }
+
+  return normalizedData;
 }
