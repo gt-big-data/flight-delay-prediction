@@ -4,6 +4,12 @@ let leastDelay = 121; // Start with a delay higher than the maximum possible (2 
 let leastDelayDivId = null;
 let originAirport = '';
 let destinationAirport = '';
+let day = ''; // Declare the global variable 'day'
+let originLat;
+let originLon;
+let destinationLat;
+let destinationLon;
+
 
 const observer = new MutationObserver(function () {
   processFlightInfo();
@@ -26,8 +32,66 @@ function processFlightInfo() {
     console.log('Destination Airport:', destinationAirport);
   }
 
+  // Extract day of the week
+
+  const dayElement = document.querySelector('.search-date');
+  if (dayElement) {
+    day = dayElement.textContent.trim().split(',')[0]; // Extract the day of the week
+    console.log('Day of the Week:', day);
+  }
+
+  async function getFlightCoordinates(flightNumber) {
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': '4bf2c12cfemsh5ceea540e69bf4bp17e9f8jsnd66ee82d72c2',
+        'X-RapidAPI-Host': 'aerodatabox.p.rapidapi.com'
+      }
+    };
+
+    try {
+      const response = await fetch(`https://aerodatabox.p.rapidapi.com/flights/number/${flightNumber}`, options);
+      const data = await response.json();
+      const flight = data[0]; // Assuming the first flight in the response is the desired one
+
+      if (flight) {
+        originLat = flight.departure.airport.location.lat;
+        originLon = flight.departure.airport.location.lon;
+        destinationLat = flight.arrival.airport.location.lat;
+        destinationLon = flight.arrival.airport.location.lon;
+
+        console.log(`Flight ${flightNumber} coordinates:`);
+        console.log(`Origin: Latitude ${originLat}, Longitude ${originLon}`);
+        console.log(`Destination: Latitude ${destinationLat}, Longitude ${destinationLon}`);
+      } else {
+        console.log(`No flight found with number ${flightNumber}`);
+      }
+    } catch (error) {
+      console.error(`Error fetching coordinates for flight ${flightNumber}:`, error);
+    }
+  }
 
 
+  // Usage example
+  getFlightCoordinates('DL 1178');
+  console.log('distance: ', calculateDistance(originLat, originLon, destinationLat, destinationLon));
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
 
   const flightCardDivs = document.querySelectorAll('.flight-card__body');
 
@@ -36,7 +100,7 @@ function processFlightInfo() {
 
     flightCardDivs.forEach((flightCardDiv, index) => {
 
-      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c246]');
+      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c250]');
       if (flightNumberSpan) {
         const flightNumber = flightNumberSpan.textContent.trim().split(' ')[0];
         flightInfoArray.push(flightNumber);
@@ -47,18 +111,6 @@ function processFlightInfo() {
           leastDelay = delayMinutes;
           leastDelayDivId = `flight-${index}`;
           flightCardDiv.id = leastDelayDivId; // Assign a unique ID
-        }
-        if (delayMinutes === 0) {
-          window.noDelayFlights.push({
-            flightNumber: flightNumber,
-            delayMinutes: delayMinutes,
-            imageSrc: 'https://oconnorhardware.com/wp-content/uploads/2023/01/Delta-Logo.png',
-            flightTimes: '11:11PM - 11:11AM',
-            airlineName: 'Delta',
-            duration: '11min',
-            fromTo: 'ATL-BOS'
-            // Add other relevant flight details here
-          });
         }
       }
     });
