@@ -102,7 +102,7 @@ async function processFlightInfo() {
     const options = {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer YOUR_ACCESS_TOKEN_HERE',
+        'Authorization': 'Bearer ya29.a0Ad52N39p9Ddlyvd0HrXZ2pkw_lcgL0R6vdjufLfhcGIm7ARj4jPrTMqNFaT3YdZftSrX2dCTizAk1It1mLl0-Ta8mp35bEZwTaxfBKH3BojCMpzS2LkrUFQSYEDPc3OhUJOiLXgOjnEIw4zvkpnY93sddWSqqDtr3cM5bUog8T4aCgYKAWgSARESFQHGX2MicnEk-ZHIZp7chtzDHy6ZyA0178',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(normalizedData)
