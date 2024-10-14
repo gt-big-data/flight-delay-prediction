@@ -1,4 +1,4 @@
-console.log("Delta script started mk3");
+console.log("Delta script started mk4");
 
 let leastDelay = 121; // Start with a delay higher than the maximum possible (2 hours in minutes)
 let leastDelayDivId = null;
@@ -40,11 +40,11 @@ async function processFlightInfo() {
     observer.disconnect(); // Stop observing changes to prevent infinite loop
 
     for (const flightCardDiv of flightCardDivs) {
-      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c250]');
+      const flightNumberSpan = flightCardDiv.querySelector('span[_ngcontent-shopping-slice-c251]');
       if (flightNumberSpan) {
         const flightNumber = flightNumberSpan.textContent.trim().split(' ')[0];
         flightInfoArray.push(flightNumber);
-
+        console.log(flightInfoArray);
         try {
           const flightInfo = await getFlightCoordinates(flightNumber);
           if (flightInfo) {
@@ -102,7 +102,9 @@ async function processFlightInfo() {
     const options = {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ya29.a0Ad52N39p9Ddlyvd0HrXZ2pkw_lcgL0R6vdjufLfhcGIm7ARj4jPrTMqNFaT3YdZftSrX2dCTizAk1It1mLl0-Ta8mp35bEZwTaxfBKH3BojCMpzS2LkrUFQSYEDPc3OhUJOiLXgOjnEIw4zvkpnY93sddWSqqDtr3cM5bUog8T4aCgYKAWgSARESFQHGX2MicnEk-ZHIZp7chtzDHy6ZyA0178',
+        //to generate token, run 'gcloud auth print-access-token' with gcloud sdk installed locally.
+
+        'Authorization': 'Bearer ya29.a0Ad52N3_c9uBkf5k4YWzSuV9CA-J8VIsO1QCYyMuvxSk-ngOMyV60Z4cHN6NngPirsOQcmxikfmGW61PKxPsLj8yfKS6RUdCKzA7WZhLkYITnouS8QPiiaOc6Tt6BxYOhT-3vCOKbWP7xLt6vrLvkf-i0CnsxhWL-eSRibjwwLIIaCgYKAZ0SARESFQHGX2MiamCezbUo0khVn0hDvtHq3Q0178',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(normalizedData)
