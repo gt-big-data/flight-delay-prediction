@@ -26,6 +26,12 @@
         "js": ["js/southwestScript.js"],
         "run_at":"document_idle",
         "all_frames":true
+      },
+      {
+        "matches": ["*://www.google.com/travel/flights/*"],
+        "js": ["js/GoogleScraping.js"],
+        "run_at":"document_idle",
+        "all_frames":true
       }
     ],
     
