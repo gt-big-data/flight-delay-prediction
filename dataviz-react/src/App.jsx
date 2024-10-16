@@ -18,7 +18,7 @@ const App = () => {
         {/* Header Component */}
         <Header />
         {/* Main Content */}
-        <div className="p-4 space-y-4 overflow-y-auto h-full scrollbar-hidden">
+        <div className="p-4 space-y-4 overflow-y-auto h-full hide-scrollbar">
           <Routes>
             {/* Default Route */}
             <Route path="/" element={<Flights />} />
