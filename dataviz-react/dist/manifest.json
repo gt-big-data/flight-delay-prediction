@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Flight Delay Prediction",
+  "description": "FDP - BDBI @ Georgia Tech",
+  "version": "1.0.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "FDP",
+    "default_icon": {
+      "96": "favicon.png"
+    }
+  },
+  "permissions": ["scripting"],
+  "icons": {
+    "96": "favicon.png"
+  }
+}
