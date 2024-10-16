@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Flights from "./routes/Flights";
 import Setting from "./routes/Setting";
@@ -13,13 +18,16 @@ const App = () => {
         {/* Header Component */}
         <Header />
         {/* Main Content */}
-        <div className="p-4 space-y-4 overflow-y-auto h-full hide-scrollbar">
-          {/* Routes for different pages */}
+        <div className="p-4 space-y-4 overflow-y-auto h-full scrollbar-hidden">
           <Routes>
+            {/* Default Route */}
             <Route path="/" element={<Flights />} />
+            {/* Other Routes */}
             <Route path="/setting" element={<Setting />} />
             <Route path="/notification" element={<Notification />} />
             <Route path="/profile" element={<Profile />} />
+            {/* Redirect unknown routes to the home page */}
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </div>
