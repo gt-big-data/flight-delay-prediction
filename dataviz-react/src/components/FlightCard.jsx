@@ -137,7 +137,7 @@ const FlightCard = ({
           <p className="text-[#808089] text-xs">{arrival.duration}</p>
           <Arrow />
           {/* Stops Information (contains layover info) */}
-          <p className="text-xs text-blue-500 underline">{arrival.stops}</p>
+          <p className="text-xs text-blue-500">{arrival.stops}</p>
         </div>
 
         {/* Arrival Details */}
@@ -167,7 +167,7 @@ const FlightCard = ({
         </h3>
       </div>
 
-      <div className="pt-2 text-center">
+      <div className="flex justify-center items-center pt-2 w-full">
         <h3 className="text-[10px] cursor-pointer underline text-[#808089]">
           Search for Alternative Ticket
         </h3>

@@ -6,13 +6,13 @@ const flightData = [
     departure: {
       location: "ATL",
       time: "09:33 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       weather: "sunny", // Corresponding weather condition
     },
     arrival: {
       location: "LAX",
       time: "11:30 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       duration: "5h 57m",
       stops: "Nonstop",
       weather: "partly_cloudy", // Corresponding weather condition
@@ -32,13 +32,13 @@ const flightData = [
     departure: {
       location: "ATL",
       time: "08:45 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       weather: "rain_and_sun", // Corresponding weather condition
     },
     arrival: {
       location: "ORD",
       time: "10:30 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       duration: "1h 45m",
       stops: "Nonstop",
       weather: "partly_cloudy_night", // Corresponding weather condition
@@ -58,13 +58,13 @@ const flightData = [
     departure: {
       location: "ATL",
       time: "07:15 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       weather: "scattered_showers", // Corresponding weather condition
     },
     arrival: {
       location: "DEN",
       time: "09:30 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       duration: "3h 15m",
       stops: "*1hr 16min layover",
       weather: "rain_and_thunderstorm", // Corresponding weather condition
@@ -84,13 +84,13 @@ const flightData = [
     departure: {
       location: "ATL",
       time: "06:00 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       weather: "fog", // Corresponding weather condition
     },
     arrival: {
       location: "DFW",
       time: "07:50 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       duration: "2h 50m",
       stops: "*4hr 59min layover",
       weather: "cloudy_clear_at_times", // Corresponding weather condition
@@ -111,13 +111,13 @@ const flightData = [
     departure: {
       location: "ATL",
       time: "11:00 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       weather: "cloudy", // Corresponding weather condition
     },
     arrival: {
       location: "ORD",
       time: "12:45 PM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       duration: "2h 45m",
       stops: "Nonstop",
       weather: "wind", // Corresponding weather condition
@@ -137,13 +137,13 @@ const flightData = [
     departure: {
       location: "ATL",
       time: "10:30 AM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       weather: "scattered_thunderstorm", // Corresponding weather condition
     },
     arrival: {
       location: "LAX",
       time: "1:15 PM",
-      date: "Wed, 10/16/2024",
+      date: "10/16/2024, Wed",
       duration: "5h 45m",
       stops: "Nonstop",
       weather: "heavy_rain", // Corresponding weather condition
