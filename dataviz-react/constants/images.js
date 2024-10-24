@@ -1,2 +1,8 @@
 // Endpoint for images
-export default {};
+import bdbi from "../src/assets/images/bdbi.jpeg";
+import gt from "../src/assets/images/gt.png";
+
+export default {
+  bdbi,
+  gt,
+};

@@ -3,6 +3,7 @@ import Arrow from "./Arrow";
 import logos from "../../constants/logos";
 import icons from "../../constants/icons";
 import weather from "../../constants/weather";
+import { useEffect, useState } from "react";
 
 const FlightCard = ({
   airlineName,
@@ -14,6 +15,9 @@ const FlightCard = ({
   layover,
   onBellClick,
   lastUpdated,
+  infoUrl,
+  removeFlight,
+  notificationOn,
 }) => {
   // Color variation handler
   const getDelayStatusColor = (message) => {
@@ -35,27 +39,35 @@ const FlightCard = ({
     }
   };
 
-  // Calculate time difference
-  // Get the currentTime and lastUpdated time
-  // currentTime - lastUpdated time = differentMinute -> what we want to show on the screen.
-  const getTimeDifference = (lastUpdated) => {
-    const currentTime = new Date();
-    const diffInMs = currentTime - lastUpdated;
-    const diffInMinutes = Math.floor(diffInMs / 60000);
+  const [elapsedTime, setElapsedTime] = useState("Just now");
 
-    // Conditions for different stages
-    if (diffInMinutes < 1) {
+  // Function to calculate the elapsed time since last update
+  const calculateElapsedTime = (lastUpdated) => {
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - lastUpdated) / (1000 * 60));
+
+    if (diffInMinutes === 0) {
       return "Just now";
     } else if (diffInMinutes < 60) {
-      return `${diffInMinutes} mins ago`; // minutes
-    } else if (diffInMinutes < 24 * 60) {
-      const diffInHours = Math.floor(diffInMinutes / 60);
-      return `${diffInHours} hours ago`; // hours
+      return `${diffInMinutes} min${diffInMinutes > 1 ? "s" : ""} ago`;
     } else {
-      const diffInDays = Math.floor(diffInMinutes / (60 * 24)); // days
-      return `${diffInDays} days ago`;
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
     }
   };
+
+  // Update the elapsed time every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElapsedTime(calculateElapsedTime(lastUpdated));
+    }, 60000); // Update every 60 seconds
+
+    // Initial calculation when the component mounts
+    setElapsedTime(calculateElapsedTime(lastUpdated));
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, [lastUpdated]);
 
   return (
     <div className="border border-gray-200 rounded-lg p-4 pb-2 mb-4 shadow-sm">
@@ -75,15 +87,27 @@ const FlightCard = ({
         <div className="flex items-center gap-2 ml-auto">
           <Button
             src={icons.info}
-            onClick={onBellClick}
+            handler={() => {
+              if (infoUrl) {
+                window.open(infoUrl, "_blank");
+              }
+            }}
             size={14}
             alt="Info Icon"
           />
           <Button
-            src={icons.notification}
-            onClick={onBellClick}
+            src={
+              notificationOn ? icons.notification_on : icons.notification_off
+            }
+            handler={onBellClick}
             size={14}
             alt="Notification Icon"
+          />
+          <Button
+            src={icons.remove}
+            handler={removeFlight}
+            size={14}
+            alt="Remove Icon"
           />
         </div>
       </div>
@@ -99,7 +123,6 @@ const FlightCard = ({
             <h4 className="text-base font-semibold">{departure.location}</h4>
             <Button
               src={weather[departure.weather]}
-              onClick={onBellClick}
               size={12}
               alt={`${departure.weather} Icon`}
               customStyle={``}
@@ -123,7 +146,6 @@ const FlightCard = ({
             <h4 className="text-base font-semibold">{arrival.location}</h4>
             <Button
               src={weather[arrival.weather]}
-              onClick={onBellClick}
               size={12}
               alt={`${arrival.weather} Icon`}
               customStyle={``}
@@ -139,14 +161,16 @@ const FlightCard = ({
         className={`flex flex-col text-center px-4 py-2 rounded-md text-black font-[500] text-sm ${getDelayStatusColor(delayStatus.message)}`}
       >
         {`Expected delay : ${delayStatus.message}`}
-        <h3 className="w-fit self-center text-xs underline cursor-pointer font-normal">
-          Search for Alternative Ticket
+        {/* Update Status */}
+        <h3 className="w-fit self-center text-xs underline font-normal">
+          Last Updated: {elapsedTime}
         </h3>
       </div>
 
-      {/* Update Status */}
-      <div className="pt-2 text-center text-[10px] text-[#808089]">
-        Last Updated: {getTimeDifference(lastUpdated)}
+      <div className="pt-2 text-center">
+        <h3 className="text-[10px] cursor-pointer underline text-[#808089]">
+          Search for Alternative Ticket
+        </h3>
       </div>
     </div>
   );
