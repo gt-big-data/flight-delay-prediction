@@ -1,6 +1,6 @@
 # Flight Delay Prediction Application
 
-<img src="/src/assets/images/gt.png" alt="GT Logo" width="80" height="80" style="object-fit: contain;" /> <img src="/src/assets/images/bdbi.jpeg" alt="BDBI Logo" width="80" height="80" style="object-fit: contain;" />
+<img src="./src/assets/images/gt.png" alt="GT Logo" width="80" height="80" style="object-fit: contain;" /> <img src="./src/assets/images/bdbi.jpeg" alt="BDBI Logo" width="80" height="80" style="object-fit: contain;" />
 
 This is a web application that provides flight delay prediction and updates, powered by machine learning technology. The app allows users to track flight delays, receive notifications on delay updates, and view detailed flight information.
 
