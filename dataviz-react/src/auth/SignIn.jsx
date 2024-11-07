@@ -1,11 +1,24 @@
 import React from "react";
 import { icons, images } from "../../constants";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../firebase-config';
 
 const SignIn = ({ onSignIn }) => {
   // TODO: hanlde sign in with authentication logic
   // For now, simulating successful signin.
-  const handleSignIn = () => {
-    onSignIn();
+  const auth = getAuth();
+  
+  const handleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      
+      if (result.user) {
+        onSignIn();
+      }
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
   };
 
   return (
@@ -40,7 +53,7 @@ const SignIn = ({ onSignIn }) => {
         onClick={handleSignIn}
         className="bg-[#0360F0] text-white text-sm font-semibold py-2 px-6 rounded-md hover:bg-blue-500 transition-colors"
       >
-        Sign In to Continue
+        Sign In with Google
       </button>
     </div>
   );
