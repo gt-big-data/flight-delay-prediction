@@ -4,17 +4,33 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../../firebase-config';
 
 const SignIn = ({ onSignIn }) => {
-  // TODO: hanlde sign in with authentication logic
-  // For now, simulating successful signin.
+  
   const auth = getAuth();
   
   const handleSignIn = async () => {
     try {
       const provider = new GoogleAuthProvider();
+
+      // Configure to always show account selection dialog
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
-        onSignIn();
+        const token = await result.user.getIdToken();
+        const userData = {
+          name: result.user.displayName,
+          email: result.user.email,
+          token: token,
+        };
+
+        // Store authentication data in localStorage for persistence
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('userData', JSON.stringify(userData));
+
+        onSignIn(userData);
       }
     } catch (error) {
       console.error("Error signing in with Google:", error);
