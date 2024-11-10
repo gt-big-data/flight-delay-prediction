@@ -4,6 +4,7 @@
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.14",
     "csv-parser": "^3.0.0",
+    "firebase": "^11.0.1",
     "fs": "^0.0.1-security"
   }
 }
