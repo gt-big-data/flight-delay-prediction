@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import FlightCard from "../components/FlightCard";
 import flightData from "../../constants/flightData";
 
@@ -25,9 +26,19 @@ const Flights = ({ lastUpdated }) => {
       )
     );
   };
+  const navigate = useNavigate();
 
   return (
     <>
+      {/* Add Button */}
+      <div className="flex justify-center flex-col">
+        <button
+          className="bg-[#0360F0] text-white text-sm font-semibold py-2 w-full rounded-md hover:bg-blue-500 transition-colors"
+          onClick={() => navigate("/addflight")}
+        >
+          Add Flight
+        </button>
+      </div>
       {flightData.map((flight, index) => (
         <FlightCard
           key={index}

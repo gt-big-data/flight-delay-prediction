@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import Flights from "./routes/Flights";
 import Setting from "./routes/Setting";
 import Notification from "./routes/Notification";
 import Profile from "./routes/Profile";
 import SignIn from "./auth/SignIn";
+import AddFlight from "./routes/AddFlight";
 
 const App = () => {
   const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -23,19 +23,19 @@ const App = () => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         // If user is authenticated, retrieve stored user data
-        const storedUserData = localStorage.getItem('userData');
+        const storedUserData = localStorage.getItem("userData");
         if (storedUserData) {
           const userData = JSON.parse(storedUserData);
           // Update user state with stored data
           setUser({
             name: userData.name,
-            email: userData.email
+            email: userData.email,
           });
           setIsAuthenticated(true);
-          
+
           // If on sign-in page, redirect to flights
-          if (window.location.pathname === '/') {
-            navigate('/flights');
+          if (window.location.pathname === "/") {
+            navigate("/flights");
           }
         }
       }
@@ -50,8 +50,8 @@ const App = () => {
   // Once log-in successful, redirect to the flight (main) page
   const handleLogin = (userData) => {
     setUser({
-      name: userData.name,    // Set the name from Google sign-in
-      email: userData.email   // Set the email from Google sign-in
+      name: userData.name, // Set the name from Google sign-in
+      email: userData.email, // Set the email from Google sign-in
     });
     setIsAuthenticated(true);
     navigate("/flights"); // Redirect to Flights after successful sign-in
@@ -62,8 +62,8 @@ const App = () => {
   const handleLogout = () => {
     auth.signOut();
     setUser({ name: "", email: "" });
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userData");
     setIsAuthenticated(false);
     navigate("/"); // Redirect to SignIn page after logout
   };
@@ -73,7 +73,7 @@ const App = () => {
   const handleRefresh = () => {
     setLastUpdated(new Date()); // Update the last updated timestamp
   };
-  
+
   // Show loading state while checking authentication
   if (isLoading) {
     return (
@@ -114,6 +114,7 @@ const App = () => {
                     />
                   }
                 />
+                <Route path="/addflight" element={<AddFlight />} />
               </>
             ) : (
               // Redirect any unauthorized access to the Sign In page
