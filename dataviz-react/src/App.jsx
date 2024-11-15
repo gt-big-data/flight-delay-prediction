@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase-config";
 import Header from "./components/Header";
 import Flights from "./routes/Flights";
 import Setting from "./routes/Setting";
@@ -19,25 +21,68 @@ const App = () => {
   const auth = getAuth();
 
   // Check authentication status on mount
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        // If user is authenticated, retrieve stored user data
-        const storedUserData = localStorage.getItem("userData");
-        if (storedUserData) {
-          const userData = JSON.parse(storedUserData);
-          // Update user state with stored data
-          setUser({
-            name: userData.name,
-            email: userData.email,
-          });
-          setIsAuthenticated(true);
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+  //     if (firebaseUser) {
+  //       // If user is authenticated, retrieve stored user data
+  //       const storedUserData = localStorage.getItem("userData");
+  //       if (storedUserData) {
+  //         const userData = JSON.parse(storedUserData);
+  //         // Update user state with stored data
+  //         setUser({
+  //           name: userData.name,
+  //           email: userData.email,
+  //         });
+  //         setIsAuthenticated(true);
 
-          // If on sign-in page, redirect to flights
-          if (window.location.pathname === "/") {
-            navigate("/flights");
+  //         // If on sign-in page, redirect to flights
+  //         if (window.location.pathname === "/") {
+  //           navigate("/flights");
+  //         }
+  //       }
+  //     }
+  //     setIsLoading(false);
+  //   });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          // Get user data from Firestore instead of localStorage
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUser({
+              name: userData.name,
+              email: userData.email,
+            });
+            setIsAuthenticated(true);
+
+            // Still store in localStorage for quick access
+            localStorage.setItem("userData", JSON.stringify(userData));
+
+            // If on sign-in page, redirect to flights
+            if (window.location.pathname === "/") {
+              navigate("/flights");
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          // Fallback to localStorage if Firestore fetch fails
+          const storedUserData = localStorage.getItem("userData");
+          if (storedUserData) {
+            const userData = JSON.parse(storedUserData);
+            setUser({
+              name: userData.name,
+              email: userData.email,
+            });
+            setIsAuthenticated(true);
           }
         }
+      } else {
+        // User is signed out
+        setUser({ name: "", email: "" });
+        setIsAuthenticated(false);
       }
       setIsLoading(false);
     });

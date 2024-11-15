@@ -1,7 +1,8 @@
 import React from "react";
 import { icons, images } from "../../constants";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '../../firebase-config';
+import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { auth, db } from '../../firebase-config';
 
 const SignIn = ({ onSignIn }) => {
   
@@ -25,6 +26,10 @@ const SignIn = ({ onSignIn }) => {
           email: result.user.email,
           token: token,
         };
+
+        const userRef = doc(db, 'users', result.user.uid);
+        await setDoc(userRef, userData, { merge: true});
+        
 
         // Store authentication data in localStorage for persistence
         localStorage.setItem('authToken', token);
