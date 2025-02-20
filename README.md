@@ -20,3 +20,5 @@ Repository for Big Data Big Impact flight delay prediction project - 2023
 * Edison Hong
 * Raksha Govind
 * Daniel Ayoung-Chee
+* Spencer Banko* Kate Jeong
+* Riyan Patel
