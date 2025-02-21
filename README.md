@@ -39,7 +39,7 @@
 * [Team Member 2]
 
 ### Platform Team
-* [Team Member]
+* Ian Wilson
 * [Team Member]
 * [Team Member]
 * [Team Member]
