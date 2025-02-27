@@ -30,3 +30,4 @@ dist-ssr
 .env.local
 .env.development
 .env.production
+node_modules/

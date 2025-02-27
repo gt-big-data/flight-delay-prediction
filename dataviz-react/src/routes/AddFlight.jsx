@@ -1,19 +1,49 @@
 import React, { useState } from "react";
+import { auth, firestore } from '../../firebase-config'; // Import Firestore
+import { collection, doc, setDoc } from 'firebase/firestore';
 
 const AddFlight = () => {
   const [flightNumber, setFlightNumber] = useState("");
-  const [airlineName, setAirlineName] = useState("");
-  const [departure, setDeparture] = useState("");
-  const [arrival, setArrival] = useState("");
+  const [date, setDate] = useState(""); // Only keeping flightNumber and date
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Flight Added:", {
+
+    // Get the current user's ID
+    const user = auth.currentUser; // Get the authenticated user
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    // Prepare flight data with dummy values
+    const flightData = {
       flightNumber,
-      airlineName,
-      departure,
-      arrival,
-    });
+      date,
+      delay: "No Delay", // Dummy value
+      notification: false, // Dummy value
+      depAirport: "ATL", // Dummy value
+      arrAirport: "LAX", // Dummy value
+      airline: "Dummy Airline", // Dummy value
+    };
+
+    // Call the addFlight function
+    await addFlight(user.uid, flightData);
+  };
+
+  const addFlight = async (userId, flightData) => {
+    const flightDoc = {
+      flightNumber: flightData.flightNumber,
+      date: flightData.date,
+      delay: flightData.delay,
+      notification: flightData.notification,
+      depAirport: flightData.depAirport,
+      arrAirport: flightData.arrAirport,
+      airline: flightData.airline,
+    };
+
+    await setDoc(doc(collection(firestore, 'users', userId, 'flights'), flightData.flightNumber), flightDoc);
+    console.log("Flight Added:", flightDoc);
   };
 
   return (
@@ -34,38 +64,13 @@ const AddFlight = () => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Airline Name
+            Date
           </label>
           <input
-            type="text"
-            value={airlineName}
-            onChange={(e) => setAirlineName(e.target.value)}
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             className="mt-1 p-2 w-full border rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="e.g., American Airlines"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Departure
-          </label>
-          <input
-            type="text"
-            value={departure}
-            onChange={(e) => setDeparture(e.target.value)}
-            className="mt-1 p-2 w-full border rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="e.g., 10:00 AM"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Arrival
-          </label>
-          <input
-            type="text"
-            value={arrival}
-            onChange={(e) => setArrival(e.target.value)}
-            className="mt-1 p-2 w-full border rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="e.g., 2:00 PM"
           />
         </div>
         <button

@@ -10,7 +10,12 @@
       "96": "favicon.png"
     }
   },
-  "permissions": ["scripting"],
+  "permissions": [
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.cloudfunctions.net/*"
+  ],
   "icons": {
     "96": "favicon.png"
   }
