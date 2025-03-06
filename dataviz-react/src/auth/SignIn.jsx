@@ -28,30 +28,37 @@ const SignIn = ({ onSignIn }) => {
           token: token,
         };
 
-        // Store authentication data in localStorage for persistence
-        localStorage.setItem('authToken', token);
-        localStorage.setItem('userData', JSON.stringify(userData));
+        try {
+          // Create user document in Firestore
+          const userDoc = {
+            email: result.user.email,
+            fullName: result.user.displayName,
+            uid: result.user.uid,
+            updateFrequency: 'daily',
+            dateCreated: new Date(),
+            profilePhotoUrl: result.user.photoURL,
+            lastSignIn: new Date() // Add last sign in time
+          };
 
-        // Create user document in Firestore
-        const userDoc = {
-          email: result.user.email,
-          fullName: result.user.displayName,
-          uid: result.user.uid,
-          updateFrequency: 'daily', // Default value or set as needed
-          dateCreated: new Date(), // New field for date created
-          profilePhotoUrl: result.user.photoURL // New field for profile photo URL
-        };
+          // Save user document to Firestore with merge option
+          await setDoc(doc(firestore, 'users', result.user.uid), userDoc, { merge: true });
 
-        // Save user document to Firestore
-        await setDoc(doc(collection(firestore, 'users'), result.user.uid), userDoc);
+          // Store authentication data in localStorage
+          localStorage.setItem('authToken', token);
+          localStorage.setItem('userData', JSON.stringify(userData));
 
-        // Initialize flights subcollection
-        const flightsCollection = collection(doc(firestore, 'users', result.user.uid), 'flights');
-
-        onSignIn(userData);
+          onSignIn(userData);
+        } catch (firestoreError) {
+          console.error("Error saving user data to Firestore:", firestoreError);
+          // Show a more user-friendly error message
+          alert("Successfully signed in, but there was an error saving your profile. Some features may be limited.");
+          // Still allow sign in even if Firestore fails
+          onSignIn(userData);
+        }
       }
     } catch (error) {
       console.error("Error signing in with Google:", error);
+      alert("Failed to sign in. Please try again.");
     }
   };
 
