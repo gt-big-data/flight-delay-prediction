@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { auth, firestore } from "../../firebase-config";
-import { collection, getDocs, query, doc, updateDoc } from "firebase/firestore";
+import { 
+  collection, 
+  getDocs, 
+  query, 
+  doc, 
+  updateDoc,
+  getDoc 
+} from "firebase/firestore";
 import FlightCard from "../components/FlightCard";
 
 const Notification = () => {
+  // States for flight notifications
   const [notifiedFlights, setNotifiedFlights] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // States for frequency settings
+  const [frequency, setFrequency] = useState('daily');
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('');
 
   // Load flights with notifications enabled from Firestore
   useEffect(() => {
@@ -75,10 +88,26 @@ const Notification = () => {
     };
 
     fetchNotifiedFlights();
+    loadUserSettings();
   }, []);
 
-  // Toggle notification off
-  const toggleNotification = async (flightNumber) => {
+  // Load current user's frequency setting
+  const loadUserSettings = async () => {
+    if (auth.currentUser) {
+      const userDoc = doc(firestore, 'users', auth.currentUser.uid);
+      try {
+        const docSnap = await getDoc(userDoc);
+        if (docSnap.exists() && docSnap.data().updateFrequency) {
+          setFrequency(docSnap.data().updateFrequency);
+        }
+      } catch (error) {
+        console.error("Error loading user settings:", error);
+      }
+    }
+  };
+
+  // Method 1: Toggle notification for a specific flight
+  const toggleNotificationOnFlight = async (flightNumber) => {
     try {
       const user = auth.currentUser;
       if (!user) {
@@ -114,46 +143,105 @@ const Notification = () => {
     }
   };
 
+  // Method 2: Update notification frequency settings
+  const updateFrequency = async () => {
+    if (!auth.currentUser) return;
+
+    setIsSaving(true);
+    setSaveStatus('');
+
+    try {
+      const userDoc = doc(firestore, 'users', auth.currentUser.uid);
+      await updateDoc(userDoc, {
+        updateFrequency: frequency
+      });
+      setSaveStatus('Settings saved successfully!');
+    } catch (error) {
+      console.error("Error updating frequency:", error);
+      setSaveStatus('Error saving settings. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Your Notifications</h2>
-      
-      {loading ? (
-        <div className="text-center py-8">
-          <p>Loading notifications...</p>
+    <div className="p-4">
+      {/* Frequency Settings Section */}
+      <div className="mb-8 border-b pb-6">
+        <h2 className="text-lg font-bold mb-4">Notification Settings</h2>
+        
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Update Frequency
+          </label>
+          <select
+            value={frequency}
+            onChange={(e) => setFrequency(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md"
+          >
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="biweekly">Bi-weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
         </div>
-      ) : notifiedFlights.length === 0 ? (
-        <div className="text-center py-8">
-          <p>No flight notifications enabled</p>
-          <p className="text-sm text-gray-500 mt-2">
-            Toggle the bell icon on a flight to receive notifications
+
+        <button
+          onClick={updateFrequency}
+          disabled={isSaving}
+          className="bg-[#0360F0] text-white px-4 py-2 rounded-md hover:bg-blue-500 disabled:bg-gray-400"
+        >
+          {isSaving ? 'Saving...' : 'Save Changes'}
+        </button>
+
+        {saveStatus && (
+          <p className={`mt-2 text-sm ${saveStatus.includes('Error') ? 'text-red-500' : 'text-green-500'}`}>
+            {saveStatus}
           </p>
-        </div>
-      ) : (
-        <div>
-          <p className="text-sm text-gray-500 mb-4">
-            You will receive notifications for these flights
-          </p>
-          
-          {notifiedFlights.map((flight, index) => (
-            <FlightCard
-              key={index}
-              airlineLogo={flight.airlineLogo}
-              airlineName={flight.airlineName}
-              flightNumber={flight.flightNumber}
-              departure={flight.departure}
-              arrival={flight.arrival}
-              delayStatus={flight.delayStatus}
-              layover={flight.layover}
-              lastUpdated={new Date()} // Always use current date for simplicity
-              infoUrl={flight.infoUrl}
-              notificationOn={true}
-              onBellClick={() => toggleNotification(flight.flightNumber)}
-              removeFlight={() => toggleNotification(flight.flightNumber)}
-            />
-          ))}
-        </div>
-      )}
+        )}
+      </div>
+
+      {/* Flight Notifications Section */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Your Notifications</h2>
+        
+        {loading ? (
+          <div className="text-center py-8">
+            <p>Loading notifications...</p>
+          </div>
+        ) : notifiedFlights.length === 0 ? (
+          <div className="text-center py-8">
+            <p>No flight notifications enabled</p>
+            <p className="text-sm text-gray-500 mt-2">
+              Toggle the bell icon on a flight to receive notifications
+            </p>
+          </div>
+        ) : (
+          <div>
+            <p className="text-sm text-gray-500 mb-4">
+              You will receive notifications for these flights
+            </p>
+            
+            {notifiedFlights.map((flight, index) => (
+              <FlightCard
+                key={index}
+                airlineLogo={flight.airlineLogo}
+                airlineName={flight.airlineName}
+                flightNumber={flight.flightNumber}
+                departure={flight.departure}
+                arrival={flight.arrival}
+                delayStatus={flight.delayStatus}
+                layover={flight.layover}
+                lastUpdated={new Date()} // Always use current date for simplicity
+                infoUrl={flight.infoUrl}
+                notificationOn={true}
+                onBellClick={() => toggleNotificationOnFlight(flight.flightNumber)}
+                removeFlight={() => toggleNotificationOnFlight(flight.flightNumber)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
