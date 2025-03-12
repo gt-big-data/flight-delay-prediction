@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import { auth, firestore } from "../../firebase-config";
 import { 
   collection, 
@@ -16,6 +17,7 @@ const Notification = () => {
   const [loading, setLoading] = useState(true);
   
   // States for frequency settings
+
   const [frequency, setFrequency] = useState('daily');
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
@@ -145,6 +147,9 @@ const Notification = () => {
 
   // Method 2: Update notification frequency settings
   const updateFrequency = async () => {
+
+  // Load current user's frequency setting
+
     if (!auth.currentUser) return;
 
     setIsSaving(true);
@@ -166,6 +171,7 @@ const Notification = () => {
 
   return (
     <div className="p-4">
+
       {/* Frequency Settings Section */}
       <div className="mb-8 border-b pb-6">
         <h2 className="text-lg font-bold mb-4">Notification Settings</h2>
@@ -245,5 +251,4 @@ const Notification = () => {
     </div>
   );
 };
-
 export default Notification;
