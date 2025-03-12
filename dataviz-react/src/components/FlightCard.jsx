@@ -41,29 +41,50 @@ const FlightCard = ({
 
   const [elapsedTime, setElapsedTime] = useState("Just now");
 
-  // Function to calculate the elapsed time since last update
-  const calculateElapsedTime = (lastUpdated) => {
-    const now = new Date();
-    const diffInMinutes = Math.floor((now - lastUpdated) / (1000 * 60));
+  // Function to calculate the elapsed time since last update - with safety checks
+  const calculateElapsedTime = (lastUpdatedValue) => {
+    try {
+      // Make sure lastUpdatedValue is a valid Date object
+      let updateTime;
+      if (!lastUpdatedValue) {
+        return "Just now";
+      }
+      
+      if (lastUpdatedValue instanceof Date) {
+        updateTime = lastUpdatedValue;
+      } else {
+        updateTime = new Date(lastUpdatedValue);
+      }
+      
+      if (isNaN(updateTime.getTime())) {
+        return "Just now";
+      }
+      
+      const now = new Date();
+      const diffInMinutes = Math.floor((now - updateTime) / (1000 * 60));
 
-    if (diffInMinutes === 0) {
+      if (diffInMinutes === 0) {
+        return "Just now";
+      } else if (diffInMinutes < 60) {
+        return `${diffInMinutes} min${diffInMinutes > 1 ? "s" : ""} ago`;
+      } else {
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+      }
+    } catch (error) {
+      console.error("Error calculating time:", error);
       return "Just now";
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes} min${diffInMinutes > 1 ? "s" : ""} ago`;
-    } else {
-      const diffInHours = Math.floor(diffInMinutes / 60);
-      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
     }
   };
 
   // Update the elapsed time every minute
   useEffect(() => {
+    // Set initial value
+    setElapsedTime(calculateElapsedTime(lastUpdated));
+    
     const interval = setInterval(() => {
       setElapsedTime(calculateElapsedTime(lastUpdated));
     }, 60000); // Update every 60 seconds
-
-    // Initial calculation when the component mounts
-    setElapsedTime(calculateElapsedTime(lastUpdated));
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
@@ -95,14 +116,17 @@ const FlightCard = ({
             size={14}
             alt="Info Icon"
           />
-          <Button
-            src={
-              notificationOn ? icons.notification_on : icons.notification_off
-            }
-            handler={onBellClick}
-            size={14}
-            alt="Notification Icon"
-          />
+          <div className={notificationOn ? "bg-blue-200 rounded-full" : ""}>
+            <Button
+              src={
+                notificationOn ? icons.notification_on : icons.notification_off
+              }
+              handler={onBellClick}
+              size={14}
+              alt="Notification Icon"
+              customStyle={notificationOn ? "text-blue-600" : ""}
+            />
+          </div>
           <Button
             src={icons.remove}
             handler={removeFlight}
