@@ -5,14 +5,21 @@ import { collection, doc, setDoc } from 'firebase/firestore';
 const AddFlight = () => {
   const [flightNumber, setFlightNumber] = useState("");
   const [date, setDate] = useState(""); // Only keeping flightNumber and date
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+    setSuccess(false);
 
     // Get the current user's ID
     const user = auth.currentUser; // Get the authenticated user
     if (!user) {
-      console.error("User not authenticated");
+      setError("User not authenticated");
+      setIsSubmitting(false);
       return;
     }
 
@@ -28,56 +35,80 @@ const AddFlight = () => {
     };
 
     // Call the addFlight function
-    await addFlight(user.uid, flightData);
+    try {
+      await addFlight(user.uid, flightData);
+      setSuccess(true);
+      // Reset form
+      setFlightNumber("");
+      setDate("");
+    } catch (err) {
+      setError(`Error adding flight: ${err.message}`);
+      console.error("Error adding flight:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const addFlight = async (userId, flightData) => {
-    const flightDoc = {
-      flightNumber: flightData.flightNumber,
-      date: flightData.date,
-      delay: flightData.delay,
-      notification: flightData.notification,
-      depAirport: flightData.depAirport,
-      arrAirport: flightData.arrAirport,
-      airline: flightData.airline,
-    };
-
-    await setDoc(doc(collection(firestore, 'users', userId, 'flights'), flightData.flightNumber), flightDoc);
-    console.log("Flight Added:", flightDoc);
+    // Store in the nested flights collection within the user document
+    const userDocRef = doc(firestore, 'users', userId);
+    const flightsCollectionRef = collection(userDocRef, 'flights');
+    await setDoc(doc(flightsCollectionRef, flightData.flightNumber), flightData);
+    console.log("Flight Added:", flightData);
   };
 
   return (
-    <div className="">
-      <h2 className="text-lg font-semibold text-gray-800 mb-6">Add Flight</h2>
+    <div className="p-4">
+      <h2 className="text-xl font-semibold mb-4">Add a Flight</h2>
+      
+      {success && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+          Flight added successfully!
+        </div>
+      )}
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Flight Number
           </label>
           <input
             type="text"
             value={flightNumber}
             onChange={(e) => setFlightNumber(e.target.value)}
-            className="mt-1 p-2 w-full border rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="e.g., AA123"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="e.g. DL1234"
+            required
           />
         </div>
+        
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Date
           </label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="mt-1 p-2 w-full border rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
           />
         </div>
+        
         <button
           type="submit"
-          className="bg-[#0360F0] text-white text-sm font-semibold py-2 w-full rounded-md hover:bg-blue-500 transition-colors"
+          disabled={isSubmitting}
+          className={`w-full bg-blue-600 text-white py-2 rounded-md ${
+            isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-700"
+          }`}
         >
-          Add Flight
+          {isSubmitting ? "Adding..." : "Add Flight"}
         </button>
       </form>
     </div>
