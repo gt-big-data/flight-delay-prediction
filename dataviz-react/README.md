@@ -59,9 +59,9 @@ Follow the steps below to set up and run the project locally:
 Once the installation is complete, you can start the development server:
 
 ```sh
-npm start
+npm run dev
 # or
-yarn start
+yarn start 
 ```
 
 This will start the application and it will be accessible at `http://localhost:3000`.
