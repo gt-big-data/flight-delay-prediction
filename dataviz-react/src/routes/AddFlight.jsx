@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { auth, firestore } from '../../firebase-config'; // Import Firestore
+import { auth, firestore } from '../../firebase-config'; // Adjust path if needed
 import { collection, doc, setDoc } from 'firebase/firestore';
+import { getFlightDelayPrediction } from '../services/flightService';
 
 const AddFlight = () => {
   const [flightNumber, setFlightNumber] = useState("");
@@ -8,107 +9,142 @@ const AddFlight = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [predictionStatus, setPredictionStatus] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
     setSuccess(false);
+    setPredictionStatus("Fetching flight information...");
 
     // Get the current user's ID
     const user = auth.currentUser; // Get the authenticated user
     if (!user) {
       setError("User not authenticated");
       setIsSubmitting(false);
+      setPredictionStatus("");
       return;
     }
 
-    // Prepare flight data with dummy values
-    const flightData = {
-      flightNumber,
-      date,
-      delay: "No Delay", // Dummy value
-      notification: false, // Dummy value
-      depAirport: "ATL", // Dummy value
-      arrAirport: "LAX", // Dummy value
-      airline: "Dummy Airline", // Dummy value
-    };
-
-    // Call the addFlight function
     try {
+      // Get flight prediction data
+      setPredictionStatus("Analyzing flight and weather data...");
+      const predictionData = await getFlightDelayPrediction(flightNumber, date);
+      setPredictionStatus("Generating delay prediction...");
+      
+      // Extract relevant flight information
+      const flightData = {
+        flightNumber,
+        date,
+        predictedDelay: predictionData.prediction,
+        depAirport: predictionData.flightData.departure.iataCode,
+        arrAirport: predictionData.flightData.arrival.iataCode,
+        airline: predictionData.flightData.airline.name,
+        notification: false,
+        
+        // Additional details for display
+        departureTime: predictionData.flightData.departure.scheduledTime,
+        arrivalTime: predictionData.flightData.arrival.scheduledTime,
+        
+        // Weather information
+        originWeather: {
+          temp: predictionData.originWeather.main.temp,
+          description: predictionData.originWeather.weather[0].description,
+          icon: predictionData.originWeather.weather[0].icon
+        },
+        destWeather: {
+          temp: predictionData.destWeather.main.temp,
+          description: predictionData.destWeather.weather[0].description,
+          icon: predictionData.destWeather.weather[0].icon
+        },
+        
+        // Delay category based on prediction
+        delay: categorizeDelay(predictionData.prediction),
+        
+        // Timestamp for sorting
+        createdAt: new Date().toISOString()
+      };
+
+      // Store in Firestore
       await addFlight(user.uid, flightData);
+      setPredictionStatus("");
       setSuccess(true);
+      
       // Reset form
       setFlightNumber("");
       setDate("");
     } catch (err) {
-      setError(`Error adding flight: ${err.message}`);
-      console.error("Error adding flight:", err);
+      setError(`Error: ${err.message}`);
+      setPredictionStatus("");
+      console.error("Error processing flight:", err);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Categorize delay into display message
+  const categorizeDelay = (delay) => {
+    if (delay <= 0) return "No Delay";
+    if (delay < 30) return "0-30 mins";
+    if (delay < 60) return "30-60 mins";
+    if (delay < 90) return "60-90 mins";
+    if (delay < 120) return "90-120 mins";
+    return "120 mins+";
   };
 
   const addFlight = async (userId, flightData) => {
     // Store in the nested flights collection within the user document
     const userDocRef = doc(firestore, 'users', userId);
     const flightsCollectionRef = collection(userDocRef, 'flights');
-    await setDoc(doc(flightsCollectionRef, flightData.flightNumber), flightData);
-    console.log("Flight Added:", flightData);
+    
+    // Use a unique ID that combines flight number and date
+    const flightId = `${flightData.flightNumber}_${flightData.date.replace(/[^0-9]/g, '')}`;
+    
+    await setDoc(doc(flightsCollectionRef, flightId), flightData);
+    console.log("Flight Added with prediction:", flightData);
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Add a Flight</h2>
+    <div className="add-flight-container">
+      <h2>Add a Flight</h2>
       
-      {success && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-          Flight added successfully!
-        </div>
-      )}
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">Flight added successfully with delay prediction!</div>}
+      {predictionStatus && <div className="status-message">{predictionStatus}</div>}
       
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Flight Number
-          </label>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="flightNumber">Flight Number (e.g., AA123):</label>
           <input
             type="text"
+            id="flightNumber"
             value={flightNumber}
             onChange={(e) => setFlightNumber(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            placeholder="e.g. DL1234"
             required
+            placeholder="AA123"
+            disabled={isSubmitting}
           />
         </div>
         
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Date
-          </label>
+        <div className="form-group">
+          <label htmlFor="date">Flight Date:</label>
           <input
             type="date"
+            id="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
             required
+            disabled={isSubmitting}
           />
         </div>
         
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`w-full bg-blue-600 text-white py-2 rounded-md ${
-            isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-700"
-          }`}
+        <button 
+          type="submit" 
+          disabled={isSubmitting || !flightNumber || !date}
+          className="submit-button"
         >
-          {isSubmitting ? "Adding..." : "Add Flight"}
+          {isSubmitting ? 'Processing...' : 'Add Flight & Get Prediction'}
         </button>
       </form>
     </div>

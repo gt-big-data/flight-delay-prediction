@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
 import pickle
 import numpy as np
+from flask_cors import CORS
+import os
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Load the model
 with open("model.pkl", "rb") as f:
@@ -24,3 +27,6 @@ def predict():
 @app.route("/", methods=["GET"])
 def home():
     return "Flight Delay Predictor API"
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
