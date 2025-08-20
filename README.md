@@ -35,8 +35,11 @@
 * [Project Lead 2]
 
 ### Analysis Team
-* [Team Member 1]
-* [Team Member 2]
+* Andrew Romitti
+* Parth Parikh
+* Sarvesh Tiku
+* Samiya Pathak
+* Aayush Patel
 
 ### Platform Team
 * Ian Wilson
